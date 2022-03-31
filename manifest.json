@@ -1,0 +1,10 @@
+{
+    "name": "Temporal Timezones",
+    "version": "1.0.0",
+    "license": "MIT",
+    "source": "https://bruh/moment",
+    "updateUrl": "https://bruh/moment",
+    "main": "index.tsx",
+    "author": "A user",
+    "description": "Rewrite of the plugin \"Timezones\" using the Temporal API"
+}

@@ -1,0 +1,18 @@
+{
+    "name": "temporaltimezones",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "ittai": "^1.0.1",
+        "temporal-polyfill": "^0.0.5"
+    },
+    "scripts": {
+        "build": "ittai --betterdiscord=\"C:/Users/auser/AppData/Roaming/BetterDiscord/plugins\"",
+        "watch": "ittai --betterdiscord=\"C:/Users/auser/AppData/Roaming/BetterDiscord/plugins\" --watch",
+        "production": "ittai --betterdiscord=\"C:/Users/auser/AppData/Roaming/BetterDiscord/plugins\" --production"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

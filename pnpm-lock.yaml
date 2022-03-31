@@ -1,0 +1,13 @@
+lockfileVersion: 5.3
+
+specifiers:
+  temporal-polyfill: ^0.0.5
+
+dependencies:
+  temporal-polyfill: 0.0.5
+
+packages:
+
+  /temporal-polyfill/0.0.5:
+    resolution: {integrity: sha512-1cy1vDo9TnzwaerJKVXscuO+T3v+A7wz2LCXt+Y7APW1gBjOhaU00jgQ3WsEKh9dLn4yf09+1dA66TJsY64KDQ==}
+    dev: false
