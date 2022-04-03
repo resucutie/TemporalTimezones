@@ -1,0 +1,29 @@
+.wrapper {
+    padding: 8px;
+}
+
+.user-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+    margin-top: 20px;
+
+    .user-grid-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 6px 8px;
+        border-radius: 2px;
+        background: var(--background-secondary);
+
+        &:hover {
+            background: var(--background-tertiary);
+            cursor: pointer;
+        }
+        
+        .username {
+            margin-left: 4px;
+            color: var(--text-normal);
+        }
+    }
+}

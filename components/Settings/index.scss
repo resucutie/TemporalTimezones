@@ -1,0 +1,41 @@
+.user-list {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+
+    .item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px 16px;
+        padding-left: 10px;
+        margin: 5px 0;
+        background: var(--background-tertiary);
+        border-radius: 4px;
+        color: var(--text-normal);
+
+        &:first-child {
+            margin-top: 0
+        }
+
+        .username {
+            margin: 0 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .current-time{
+            color: var(--interactive-muted)
+        }
+
+        a {
+            margin-left: auto;
+        }
+    }
+
+    .add-user-button{
+        margin-top: 10px;
+    }
+}

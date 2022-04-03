@@ -3,13 +3,19 @@
 import { Plugin } from "ittai/entities";
 import * as Temporal from "temporal-polyfill"
 import * as patcher from "ittai/patcher";
-
+import * as webpack from "ittai/webpack";
+const { React } = webpack
 import UserManager from "./handlers/user";
-import userPopout from "./patches/userPopout";
+import userPopout from "./patchers/userPopout";
+import Settings from "./components/Settings";
 
 export default class IttaiTestPlugin extends Plugin {
     start() {
-        // console.log(Temporal.Now.instant().toZonedDateTimeISO(UserManager.get("359175647257690113").timeZone).toPlainTime().toString())
+        // @ts-ignore
+        if (!window.exportedTemporal) window.exportedTemporal = Temporal;
+        
+        this.setSettingsPanel(() => <Settings />)
+
         userPopout()
     }
 
