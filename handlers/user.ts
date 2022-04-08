@@ -1,33 +1,51 @@
 import { UserID } from "ittai";
 import * as settings from "ittai/settings";
 
-function add(id: UserID, userParams: SettingsUserObject) {
-    //add user to object
-    let userList: SettingsUserList = settings.get("users", {})
-    userList[id] = userParams
-    settings.set("users", userList)
-}
+// Essentials
+const getAll = (): SettingsUserList => settings.get("users", {})
+const override = (userList: SettingsUserList = {}) => settings.set("users", userList)
 
-function remove(id: UserID) {
-    //remove user from object
-    let userList: SettingsUserList = settings.get("users", {})
-    delete userList[id]
-    settings.set("users", userList)
-}
-
+// Basics
 function get(id: UserID): SettingsUserObject {
-    //get user from object
-    let userList: SettingsUserList = settings.get("users", {})
+    let userList: SettingsUserList = getAll()
     return userList[id]
 }
 
-function getAll(): SettingsUserList {
-    return settings.get("users", {})
+const save = (userList: SettingsUserList = {}) => override(Object.assign({}, getAll(), userList))
+
+// Helpers
+function add(id: UserID, userParams: SettingsUserObject, strictlyNew: boolean = false) {
+    let userList: SettingsUserList = getAll()
+    
+    if (strictlyNew && Boolean(userList[id])) throw new Error("User already exists. Please use edit() instead. If you're not a developer, please report this to A user#8169 or another contributor.")
+    
+    userList[id] = userParams
+    
+    save(userList)
+}
+
+function edit(id: UserID, userParams: SettingsUserObject, strictlyExisting: boolean = true) {
+    let userList: SettingsUserList = getAll()
+
+    if (!strictlyExisting && Boolean(userList[id])) throw new Error("User does not exist. Please use add() instead. If you're not a developer, please report this to A user#8169 or another contributor.")
+
+    userList[id] = userParams
+
+    save(userList)
+}
+
+function remove(id: UserID) {
+    let userList: SettingsUserList = getAll()
+    delete userList[id]
+    override(userList)
 }
 
 export default {
-    add,
-    remove,
     get,
-    getAll
+    getAll,
+    save,
+    override,
+    add,
+    edit,
+    remove
 }

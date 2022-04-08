@@ -9,8 +9,11 @@ import { Modal, Avatar, TextInput, Button, Text } from "ittai/components";
 import { UserObject } from "ittai";
 import { TimeZoneArg } from "temporal-polyfill";
 import isTimezone from "../../utils/isTimezone";
+import timezoneListName from "../../utils/timezoneListName.json";
 import styles from "./AddUserModal.scss"
+import Earth from "../../assets/earth";
 
+const discordClasses = webpack.findByProps("headerContainer", "modalRoot")
 
 const PAGE = {
     SELECT_USER: 0,
@@ -23,6 +26,7 @@ const getLimitedUserList = (limit: number, search = ""): Array<UserObject> => {
     const userList = Users.getUsers()
     const userListKeysSorted = Object.keys(userList)
         .sort(() => Math.random() - 0.5)
+        .filter(userId => userId !== Users.getCurrentUser().id)
         .filter(userId => Users.getUser(userId).username.toLowerCase().includes(search.toLowerCase()))
 
     // check if it should user the "limit" var or not
@@ -45,20 +49,69 @@ interface Props {
     onChooseUser: (user: UserObject, timezone: TimeZoneArg) => void
 }
 export default ({ modalRootProps, user: definedUser = undefined, onChooseUser}: Props) => {
+    const [page, setPage] = useState<number>(definedUser ? PAGE.SELECT_TIMEZONE : PAGE.SELECT_USER)
     const [selectedUser, setSelectedUser] = useState<UserObject | undefined>(definedUser)
+    const [selectedTimezone, setSelectedTimezone] = useState<TimeZoneArg | undefined>()
 
-    return <Modal.ModalRoot size={Modal.ModalSize.MEDIUM} {...modalRootProps}>
+    return <Modal.ModalRoot size={Modal.ModalSize.LARGE} {...modalRootProps}>
+        <Modal.ModalHeader separator={false} className={discordClasses?.headerContainer}>
+            <div className={styles["instructions-text"]}>
+                <div className={styles["icon"]}>
+                    {page === PAGE.SELECT_USER && <></>}
+                    {page === PAGE.SELECT_TIMEZONE && <img
+                        src="https://media.discordapp.net/attachments/892432702651924580/960262560299495554/earth.png"
+                        width="75"
+                        height="75"
+                        style={{ imageRendering: "pixelated" }}
+                    />}
+                </div>
+                <div className={styles["text"]}>
+                    {page === PAGE.SELECT_USER && <>
+                        <Text size={Text.Sizes.SIZE_20}><b>Step 1/2</b></Text>
+                        <Text size={Text.Sizes.SIZE_16}>Select somebody to add a timezone</Text>
+                    </>}
+                    {page === PAGE.SELECT_TIMEZONE && <>
+                        <Text size={Text.Sizes.SIZE_20}><b>Step 2/2</b></Text>
+                        <Text size={Text.Sizes.SIZE_16}>Add a timezone to {selectedUser?.username}</Text>
+                    </>}
+                </div>
+            </div>
+        </Modal.ModalHeader>
         <Modal.ModalContent>
             <div className={styles["wrapper"]}>
-                {selectedUser == undefined && <SelectUserScreen onChooseUser={(user) => setSelectedUser(user)}/>}
-
-                {selectedUser != undefined && <SelectTimezoneScreen onChooseTimezone={(tz) => {
-                    onChooseUser(selectedUser, tz)
-                    // @ts-ignore
-                    modalRootProps.onClose()
-                }}/>}
+                {page === PAGE.SELECT_USER && <SelectUserScreen
+                    onChooseUser={(user) => setSelectedUser(user)}
+                />}
+                {page === PAGE.SELECT_TIMEZONE && <SelectTimezoneScreen 
+                    user={selectedUser}
+                    onChooseTimezone={(tz) => {
+                        setSelectedTimezone(tz)
+                    }}
+                />}
             </div>
         </Modal.ModalContent>
+        <Modal.ModalFooter>
+            <>
+                {page === PAGE.SELECT_USER && <Button onClick={() => setPage(PAGE.SELECT_TIMEZONE)} disabled={!selectedUser}>Next</Button>}
+                {page === PAGE.SELECT_TIMEZONE && <Button
+                    onClick={() => {
+                        if (!selectedUser || !selectedTimezone) return
+                        onChooseUser(selectedUser, selectedTimezone)
+                        // @ts-ignore
+                        modalRootProps.onClose()
+                    }}
+                    disabled={!selectedUser || !isTimezone(selectedTimezone)}
+                >Add user</Button>}
+                <Button
+                    color={Button.Colors.TRANSPARENT}
+                    look={Button.Looks.LINK}
+                    onClick={() => {
+                        // @ts-ignore
+                        modalRootProps.onClose()
+                    }}
+                >Cancel</Button>
+            </>
+        </Modal.ModalFooter>
     </Modal.ModalRoot>
 }
 
@@ -67,24 +120,31 @@ interface SelectUserScreenProps {
 }
 const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
     const [search, setSearch] = useState<string>("")
+    const [limitedUsers, setLimitedUsers] = useState<UserObject[]>()
+    const [selectedUserId, setSelectedUserId] = useState<string>()
 
-    const limitedUsers = getLimitedUserList(50, search)
+    useEffect(() => {
+        setLimitedUsers(getLimitedUserList(100, search))
+    }, [search])
 
     return <>
-        <Text size={Text.Sizes.SIZE_20}>Step 1</Text>
-        <Text size={Text.Sizes.SIZE_16}> Select somebody to add a timezone</Text>
         <TextInput
             placeholder="Search for users"
             onChange={(value) => setSearch(value)}
             value={search}
         />
         <div className={styles["user-grid"]}>
-            {limitedUsers.map(user => <div key={user.id}
-                    className={styles["user-grid-item"]}
-                    onClick={() => onChooseUser(user)}
+            {limitedUsers?.map(user => <div key={user.id}
+                    className={`${styles["user-grid-item"]} ${selectedUserId === user.id ? styles["selected"] : ""}`}
+                    onClick={() => {
+                        onChooseUser(user)
+                        setSelectedUserId(user.id)
+                    }}
                 >
                     <Avatar src={user.getAvatarURL(false, true)} size={Avatar.Sizes.SIZE_16} />
-                    <span className={styles["username"]}>{user.username}</span>
+                    <span className={styles["grid-username"]}>
+                        {user.username}
+                    </span>
                 </div>
             )}
         </div>
@@ -93,24 +153,50 @@ const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
 
 interface SelectTimezoneScreenProps {
     onChooseTimezone: (tz: TimeZoneArg) => void
+    user: UserObject | undefined
 }
-const SelectTimezoneScreen = ({ onChooseTimezone }: SelectTimezoneScreenProps) => {
+const SelectTimezoneScreen = ({ onChooseTimezone, user }: SelectTimezoneScreenProps) => {
+    console.log(Earth)
     const [timezone, setTimezone] = useState<TimeZoneArg>("")
     const [timezoneError, setTimezoneError] = useState<boolean>(false)
-
-    return <>
-        <TextInput
-            placeholder="Timezone"
-            onChange={(value) => setTimezone(value)}
-            value={timezone as string}
-            error={timezoneError}
-        />
-        <Button onClick={() => {
-            if (!isTimezone(timezone)) {
-                setTimezoneError(true)
-                return
-            }
-            onChooseTimezone(timezone)
-        }}>Add user</Button>
-    </>
+    return <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+        <div className={styles["timezone-card"]}>
+            {user && <>
+                <Avatar src={user.getAvatarURL(false, true).replace("?size=16", "")} size={Avatar.Sizes.SIZE_120} />
+                <Text size={Text.Sizes.SIZE_20} className={styles["card-username"]}><b>{user.username}#{user.discriminator}</b></Text>
+            </>}
+            <TextInput className={styles["timezone-input"]}
+                placeholder="Timezone"
+                onChange={(value) => {
+                    setTimezone(value)
+                    onChooseTimezone(value)
+                    if (!isTimezone(value)) {
+                        setTimezoneError(true)
+                    } else {
+                        setTimezoneError(false)
+                    }
+                }}
+                value={timezone as string}
+                error={timezoneError ? "Invalid timezone" : false}
+            />
+        </div>
+        <div className={styles["timezone-search"]}>
+            {timezone !== "" && timezoneListName
+                // @ts-ignore
+                .filter((tz: string) => tz !== timezone && tz.toLowerCase().includes(timezone.toLowerCase()))
+                .map((tz: string) => <>
+                    <div key={tz}
+                        className={styles["timezone-search-item"]}
+                        onClick={() => {
+                            setTimezone(tz)
+                            setTimezoneError(false)
+                            onChooseTimezone(tz)
+                        }}
+                    >
+                        {tz}
+                    </div>
+                </>
+            )}
+        </div>
+    </div>
 }

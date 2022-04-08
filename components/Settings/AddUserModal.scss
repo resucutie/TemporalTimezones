@@ -2,9 +2,32 @@
     padding: 8px;
 }
 
+.instructions-text {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--background-secondary);
+        margin-right: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
 .user-grid{
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 25%);
     grid-gap: 10px;
     margin-top: 20px;
 
@@ -15,15 +38,54 @@
         padding: 6px 8px;
         border-radius: 2px;
         background: var(--background-secondary);
+        cursor: pointer;
 
-        &:hover {
+        &.selected, &:hover{
             background: var(--background-tertiary);
-            cursor: pointer;
         }
         
-        .username {
+        .grid-username {
             margin-left: 4px;
             color: var(--text-normal);
         }
+    }
+}
+
+.timezone-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    background: var(--background-secondary);
+    border-radius: 4px;
+    position: sticky;
+    top:0;
+    width: 100%;
+
+    .card-username {
+        color: var(--text-normal);
+        margin: 8px 0;
+    }
+
+    .timezone-input {
+        color: var(--text-normal);
+        width: 100%;
+    }
+}
+
+.timezone-search {
+    // display a grid
+    display: grid;
+    grid-template-columns: repeat(3, 33%);
+    grid-gap: 10px;
+    margin-top: 20px;
+    width: 100%;
+
+    .timezone-search-item{
+        padding: 6px 8px;
+        border-radius: 2px;
+        background: var(--background-secondary);
+        color: var(--text-normal);
+        cursor: pointer;
     }
 }

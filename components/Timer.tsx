@@ -3,6 +3,7 @@ import * as webpack from "ittai/webpack";
 const { React } = webpack
 import styles from "./Timer.scss"
 import { useTemporalUpdate } from "../hooks/useTemporalUpdate";
+import * as settings from "ittai/settings"
 
 interface Props {
     tpUpdateFunc?: () => any
@@ -13,7 +14,7 @@ export default ({tpUpdateFunc = () => Temporal.Now.instant()}: Props) => {
 
     return <div className={styles["clock-wrapper"]}>
         <div className={styles["clock"]}>
-            {currentTime.toPlainTime().toString({ smallestUnit: 'second' })}
+            {currentTime.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })}
         </div>
     </div>
 }
