@@ -157,10 +157,11 @@ const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
 }
 
 //Select Timezone Screen
-const handleTimezoneDisplay = (searchTz: string, onSelection: (tz: TimeZoneArg) => void, searchOverlay?: string) => {
+const handleTimezoneDisplay = (searchTz: string, onSelection: (tz: TimeZoneArg) => void) => {
+    const normalizedSearch = searchTz.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/ /g, "_")
     const tzCategory = getTimezoneListInCategories(timezoneListName.filter((tz: string) => (
         tz !== searchTz &&
-        tz.toLowerCase().includes(searchTz.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/ /g, "_"))
+        tz.toLowerCase().includes(normalizedSearch)
     )))
 
     const sortedTzCategory = Object.keys(tzCategory).sort().reduce((acc: {[key: string]: string[]}, key: string) => {
@@ -177,7 +178,7 @@ const handleTimezoneDisplay = (searchTz: string, onSelection: (tz: TimeZoneArg) 
                         className={styles["timezone-search-item"]}
                         onClick={() => onSelection(tz)}
                     >
-                        {searchOverlay ? reactStringReplace(tz, searchOverlay, (match) => <b>{match}</b>) : tz}
+                        {reactStringReplace(tz, normalizedSearch, (match) => <b>{match}</b>)}
                     </div>
                 </>)}
             </div>
@@ -218,7 +219,7 @@ const SelectTimezoneScreen = ({ onChooseTimezone, user }: SelectTimezoneScreenPr
                 setTimezone(tz)
                 setTimezoneError(false)
                 onChooseTimezone(tz)
-            }, timezone as string)}
+            })}
         </div>
     </div>
 }

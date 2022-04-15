@@ -1,14 +1,36 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@types/react': ^18.0.5
   react-string-replace: ^1.0.0
   temporal-polyfill: ^0.0.5
 
 dependencies:
+  '@types/react': 18.0.5
   react-string-replace: 1.0.0
   temporal-polyfill: 0.0.5
 
 packages:
+
+  /@types/prop-types/15.7.5:
+    resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: false
+
+  /@types/react/18.0.5:
+    resolution: {integrity: sha512-UPxNGInDCIKlfqBrm8LDXYWNfLHwIdisWcsH5GpMyGjhEDLFgTtlRBaoWuCua9HcyuE0rMkmAeZ3FXV1pYLIYQ==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.2
+      csstype: 3.0.11
+    dev: false
+
+  /@types/scheduler/0.16.2:
+    resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: false
+
+  /csstype/3.0.11:
+    resolution: {integrity: sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==}
+    dev: false
 
   /react-string-replace/1.0.0:
     resolution: {integrity: sha512-+iLsyE4AeSmnfctgswXOf1PmKRgns6wJ4LVb+8ADMU6mDK3jvBE11QzfMQf7CYtPUUiBCDjZ9ZppzXOIYrzCRg==}
