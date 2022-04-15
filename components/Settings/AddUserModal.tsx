@@ -1,17 +1,19 @@
 import * as webpack from "ittai/webpack";
 const {
     React, React: {
-        useState, useEffect
+        useState, useEffect, useCallback
     }
 } = webpack
 import { Users } from "ittai/stores";
-import { Modal, Avatar, TextInput, Button, Text } from "ittai/components";
+import { Modal, Avatar, TextInput, Button, Text, Forms } from "ittai/components";
 import { UserObject } from "ittai";
 import { TimeZoneArg } from "temporal-polyfill";
 import isTimezone from "../../utils/isTimezone";
+import getTimezoneListInCategories from "../../utils/getTimezoneListInCategories";
 import timezoneListName from "../../utils/timezoneListName.json";
 import styles from "./AddUserModal.scss"
-import Earth from "../../assets/earth";
+import reactStringReplace from 'react-string-replace';
+import debounce from "../../utils/debounce";
 
 const discordClasses = webpack.findByProps("headerContainer", "modalRoot")
 
@@ -26,8 +28,10 @@ const getLimitedUserList = (limit: number, search = ""): Array<UserObject> => {
     const userList = Users.getUsers()
     const userListKeysSorted = Object.keys(userList)
         .sort(() => Math.random() - 0.5)
-        .filter(userId => userId !== Users.getCurrentUser().id)
-        .filter(userId => Users.getUser(userId).username.toLowerCase().includes(search.toLowerCase()))
+        .filter(userId => (
+            userId !== Users.getCurrentUser().id &&
+            Users.getUser(userId).username.toLowerCase().includes(search.toLowerCase())
+        ))
 
     // check if it should user the "limit" var or not
     const userListLimit = userListKeysSorted.length > limit ? limit : userListKeysSorted.length
@@ -115,6 +119,7 @@ export default ({ modalRootProps, user: definedUser = undefined, onChooseUser}: 
     </Modal.ModalRoot>
 }
 
+// Select User Screen
 interface SelectUserScreenProps {
     onChooseUser: (user: UserObject) => void
 }
@@ -143,7 +148,7 @@ const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
                 >
                     <Avatar src={user.getAvatarURL(false, true)} size={Avatar.Sizes.SIZE_16} />
                     <span className={styles["grid-username"]}>
-                        {user.username}
+                        {reactStringReplace(user.username, search, (match) => <b>{match}</b>)}
                     </span>
                 </div>
             )}
@@ -151,12 +156,40 @@ const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
     </>
 }
 
+//Select Timezone Screen
+const handleTimezoneDisplay = (searchTz: string, onSelection: (tz: TimeZoneArg) => void, searchOverlay?: string) => {
+    const tzCategory = getTimezoneListInCategories(timezoneListName.filter((tz: string) => (
+        tz !== searchTz &&
+        tz.toLowerCase().includes(searchTz.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "").replace(/ /g, "_"))
+    )))
+
+    const sortedTzCategory = Object.keys(tzCategory).sort().reduce((acc: {[key: string]: string[]}, key: string) => {
+        acc[key] = tzCategory[key]
+        return acc
+    }, {})
+
+    return Object.keys(sortedTzCategory).map((category: string) => <>
+        <div key={category} className={styles["timezone-category"]}>
+            <Forms.FormTitle size={Text.Sizes.SIZE_16}>{category}</Forms.FormTitle>
+            <div className={styles["timezone-subcategories"]}>
+                {tzCategory[category].map((tz: string) => <>
+                    <div key={tz}
+                        className={styles["timezone-search-item"]}
+                        onClick={() => onSelection(tz)}
+                    >
+                        {searchOverlay ? reactStringReplace(tz, searchOverlay, (match) => <b>{match}</b>) : tz}
+                    </div>
+                </>)}
+            </div>
+        </div>
+    </>)
+}
+
 interface SelectTimezoneScreenProps {
     onChooseTimezone: (tz: TimeZoneArg) => void
     user: UserObject | undefined
 }
 const SelectTimezoneScreen = ({ onChooseTimezone, user }: SelectTimezoneScreenProps) => {
-    console.log(Earth)
     const [timezone, setTimezone] = useState<TimeZoneArg>("")
     const [timezoneError, setTimezoneError] = useState<boolean>(false)
     return <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
@@ -181,22 +214,11 @@ const SelectTimezoneScreen = ({ onChooseTimezone, user }: SelectTimezoneScreenPr
             />
         </div>
         <div className={styles["timezone-search"]}>
-            {timezone !== "" && timezoneListName
-                // @ts-ignore
-                .filter((tz: string) => tz !== timezone && tz.toLowerCase().includes(timezone.toLowerCase()))
-                .map((tz: string) => <>
-                    <div key={tz}
-                        className={styles["timezone-search-item"]}
-                        onClick={() => {
-                            setTimezone(tz)
-                            setTimezoneError(false)
-                            onChooseTimezone(tz)
-                        }}
-                    >
-                        {tz}
-                    </div>
-                </>
-            )}
+            {handleTimezoneDisplay(timezone as string, (tz) => {
+                setTimezone(tz)
+                setTimezoneError(false)
+                onChooseTimezone(tz)
+            }, timezone as string)}
         </div>
     </div>
 }

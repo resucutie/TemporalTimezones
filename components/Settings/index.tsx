@@ -14,10 +14,10 @@ import { UserID, UserObject } from "ittai";
 import { useTemporalUpdate } from "../../hooks/useTemporalUpdate";
 import * as Temporal from "temporal-polyfill"
 import * as settings from "ittai/settings"
+import Timer from "../Timer";
 
 
 export default () => {
-    console.log(settings.get("seconds"))
     const [, forceUpdate] = useReducer(n => n + 1, 0);
     
     return <>
@@ -26,7 +26,11 @@ export default () => {
             description="Manually set which timezones you want to apply for your friends"
         >
             <div className={styles["user-list"]}>
-                {Object.entries(UserManager.getAll()).map(
+                {Object.entries(UserManager.getAll()).sort(([aId], [bId]) => {
+                    const a = Users.getUser(aId).username,
+                          b = Users.getUser(bId).username
+                    return a > b ? 1 : a < b ? -1 : 0
+                }).map(
                     ([id, userSettings]) => <UserItem id={id} userSettings={userSettings} onDelete={() => {
                         UserManager.remove(id)
                         forceUpdate()
@@ -46,13 +50,12 @@ export default () => {
         </Category>
 
         <Category title={<CategoryIconTitle icon="HourglassCircle">Timer Display</CategoryIconTitle>} description="Customize how you want to display the current time">
-            {console.log(settings.get("seconds", false))}
+            <div className={styles["preview"]}>
+                <Timer tpUpdateFunc={() => Temporal.PlainDateTime.from(Temporal.Now.instant().toString())} />
+            </div>
             <SwitchItem
                 value={settings.get("seconds", false)}
-                onChange={() => {
-                    console.log(settings.get("seconds", false))
-                    settings.set("seconds", !settings.get("seconds", false))
-                }}
+                onChange={() => settings.set("seconds", !settings.get("seconds", false)) }
             >Enable seconds</SwitchItem>
         </Category>
     </>
@@ -82,7 +85,7 @@ const UserItem = ({ id, userSettings, onDelete }: UserItemProps) => {
 
 const CategoryIconTitle = ({ children, icon }: { children: React.ReactNode, icon: string }) => {
     return <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        <span style={{ marginRight: "6px" }}>{children}</span>
         <DiscordIcon name={icon} width="16" height="16" />
+        <span style={{ marginLeft: "6px" }}>{children}</span>
     </div>
 }

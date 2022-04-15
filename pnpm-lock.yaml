@@ -1,12 +1,19 @@
 lockfileVersion: 5.3
 
 specifiers:
+  react-string-replace: ^1.0.0
   temporal-polyfill: ^0.0.5
 
 dependencies:
+  react-string-replace: 1.0.0
   temporal-polyfill: 0.0.5
 
 packages:
+
+  /react-string-replace/1.0.0:
+    resolution: {integrity: sha512-+iLsyE4AeSmnfctgswXOf1PmKRgns6wJ4LVb+8ADMU6mDK3jvBE11QzfMQf7CYtPUUiBCDjZ9ZppzXOIYrzCRg==}
+    engines: {node: '>=0.12.0'}
+    dev: false
 
   /temporal-polyfill/0.0.5:
     resolution: {integrity: sha512-1cy1vDo9TnzwaerJKVXscuO+T3v+A7wz2LCXt+Y7APW1gBjOhaU00jgQ3WsEKh9dLn4yf09+1dA66TJsY64KDQ==}

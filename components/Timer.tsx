@@ -11,10 +11,9 @@ interface Props {
 
 export default ({tpUpdateFunc = () => Temporal.Now.instant()}: Props) => {
     const currentTime = useTemporalUpdate(tpUpdateFunc);
+    console.log(settings.get("seconds", false))
 
-    return <div className={styles["clock-wrapper"]}>
-        <div className={styles["clock"]}>
-            {currentTime.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })}
-        </div>
+    return <div className={styles["clock"]}>
+        {currentTime.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })}
     </div>
 }

@@ -8,6 +8,7 @@ import * as patcher from "ittai/patcher";
 
 import UserManager from "../handlers/user";
 import Timer from "../components/Timer";
+import timerStyles from "../components/Timer.scss";
 
 export default function () {
     patcher.after("UserBannerPatch", webpack.find(m => m.default?.displayName === "UserBanner"), "default", ([props]: [{user: UserObject}], res, _this) => {
@@ -17,6 +18,8 @@ export default function () {
 
         if (!tz) return
 
-        res.props.children.push(<Timer tpUpdateFunc={() => Temporal.Now.instant().toZonedDateTimeISO(tz)} />)
+        res.props.children.push(<div className={timerStyles["clock-wrapper"]}>
+            <Timer tpUpdateFunc={() => Temporal.Now.instant().toZonedDateTimeISO(tz)} />
+        </div>)
     })
 }

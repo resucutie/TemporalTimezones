@@ -74,18 +74,30 @@
 }
 
 .timezone-search {
-    // display a grid
-    display: grid;
-    grid-template-columns: repeat(3, 33%);
-    grid-gap: 10px;
-    margin-top: 20px;
     width: 100%;
 
-    .timezone-search-item{
-        padding: 6px 8px;
-        border-radius: 2px;
-        background: var(--background-secondary);
-        color: var(--text-normal);
-        cursor: pointer;
+    .timezone-category{
+        margin-top: 20px;
+
+        .timezone-subcategories{
+            // display a grid
+            display: grid;
+            grid-template-columns: repeat(3, 33%);
+            grid-gap: 10px;
+            margin-top: 10px;
+            width: 100%;
+            
+            .timezone-search-item {
+                padding: 6px 8px;
+                border-radius: 2px;
+                background: var(--background-secondary);
+                color: var(--text-normal);
+                cursor: pointer;
+                
+                &:hover {
+                    background: var(--background-tertiary);
+                }
+            }
+        }
     }
 }

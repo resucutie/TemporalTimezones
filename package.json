@@ -5,6 +5,7 @@
     "main": "index.js",
     "dependencies": {
         "ittai": "^1.0.1",
+        "react-string-replace": "^1.0.0",
         "temporal-polyfill": "^0.0.5"
     },
     "scripts": {

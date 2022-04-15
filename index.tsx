@@ -8,8 +8,9 @@ const { React } = webpack
 import UserManager from "./handlers/user";
 import userPopout from "./patchers/userPopout";
 import Settings from "./components/Settings";
+import contextMenu from "./patchers/contextMenu";
 
-export default class IttaiTestPlugin extends Plugin {
+export default class TemporalTimezones extends Plugin {
     start() {
         // @ts-ignore
         if (!window.exportedTemporal) window.exportedTemporal = Temporal;
@@ -17,6 +18,7 @@ export default class IttaiTestPlugin extends Plugin {
         this.setSettingsPanel(() => <Settings />)
 
         userPopout()
+        contextMenu()
     }
 
     stop() {

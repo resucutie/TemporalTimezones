@@ -4,6 +4,8 @@ const {
 } = webpack
 
 export const useTemporalUpdate = (update: () => any): any => {
+    if(typeof update !== "function") return
+    
     const [temporal, setTemporal] = useState(update());
 
     useEffect(() => {
