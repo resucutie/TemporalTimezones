@@ -5,10 +5,10 @@ import * as Temporal from "temporal-polyfill"
 import * as patcher from "ittai/patcher";
 import * as webpack from "ittai/webpack";
 const { React } = webpack
-import UserManager from "./handlers/user";
-import userPopout from "./patchers/userPopout";
+import userPopout from "./patches/userPopout";
 import Settings from "./components/Settings";
-import contextMenu from "./patchers/contextMenu";
+import contextMenu from "./patches/contextMenu";
+import messages from "./patches/messages";
 
 export default class TemporalTimezones extends Plugin {
     start() {
@@ -18,7 +18,8 @@ export default class TemporalTimezones extends Plugin {
         this.setSettingsPanel(() => <Settings />)
 
         userPopout()
-        contextMenu()
+        // contextMenu() //removed due to issues with the context menu patching. i need to learn how to patch it properly... or somebody else to do it.
+        messages()
     }
 
     stop() {

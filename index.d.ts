@@ -5,5 +5,5 @@ interface SettingsUserObject {
 }
 
 type SettingsUserList = {
-    [key: string]: SettingsUserObject;
+    [key: import("ittai").UserID]: SettingsUserObject;
 }

@@ -39,14 +39,23 @@
         border-radius: 2px;
         background: var(--background-secondary);
         cursor: pointer;
+        
+        &.exists {
+            opacity: .6;
+            cursor: default;
+        }
 
-        &.selected, &:hover{
+        &.selected, &:not(.exists):hover{
             background: var(--background-tertiary);
         }
         
         .grid-username {
             margin-left: 4px;
             color: var(--text-normal);
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
         }
     }
 }
