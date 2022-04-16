@@ -6,7 +6,6 @@ import { findInReactTree } from "ittai/utilities"
 import AddUserModal from "../components/Settings/AddUserModal";
 import UserManager from "../handlers/user";
 import { UserObject } from "ittai";
-import { useEffect } from "ittai/node_modules/.pnpm/@types+react@17.0.38/node_modules/@types/react";
 
 // please i need to relearn how to patch a context menu
 
