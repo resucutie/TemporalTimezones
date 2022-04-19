@@ -87,6 +87,7 @@ export default () => {
                 value={settings.get("timestamp-message", true) }
                 onChange={() => {
                     settings.set("timestamp-message", !settings.get("timestamp-message", false))
+                    
                     debounce(() => updateMessages())() //debounce because lag
                 }}
             >Show the message's timestamp</SwitchItem>

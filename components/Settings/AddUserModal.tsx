@@ -146,7 +146,7 @@ const SelectUserScreen = ({ onChooseUser }: SelectUserScreenProps) => {
                 return <div key={user.id}
                     className={`${styles["user-grid-item"]} ${selectedUserId === user.id ? styles["selected"] : ""} ${exists ? styles["exists"] : ""}`}
                     onClick={() => {
-                        if(!exists) return
+                        if(exists) return
                         onChooseUser(user)
                         setSelectedUserId(user.id)
                     }}

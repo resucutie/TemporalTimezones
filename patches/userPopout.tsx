@@ -13,7 +13,6 @@ import timerStyles from "../components/Timer.scss";
 
 export default function () {
     patcher.after("UserBannerPatch", webpack.find(m => m.default?.displayName === "UserBanner"), "default", ([props]: [{user: UserObject}], res, _this) => {
-        console.log(settings.get("userpopout", true))
         if (!settings.get("userpopout", true)) return
 
         const tz = UserManager.get(props.user.id)?.timeZone
