@@ -2,7 +2,7 @@
     "name": "Temporal Timezones",
     "version": "0.2.0",
     "license": "MIT",
-    "source": "https://bruh/moment",
+    "source": "https://github.com/abUwUser/TemporalTimezones",
     "updateUrl": "https://bruh/moment",
     "main": "index.tsx",
     "author": "A user",
