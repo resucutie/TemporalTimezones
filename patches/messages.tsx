@@ -34,79 +34,33 @@ export default function() {
                             year: props.timestamp.year(),
                             month: props.timestamp.month(),
                             day: props.timestamp.day(),
-                            hour: props.timestamp.hour() + 1, //for some reason times are being converted with -1 hour when using the conversion, so i added a 1 to the hour
+                            hour: props.timestamp.hour(),
                             minute: props.timestamp.minute(),
                             second: props.timestamp.second(),
                             millisecond: props.timestamp.millisecond(),
-                        })
-                        return zdTime.withTimeZone(timezone)
+                        }).withTimeZone(timezone)
+
+                        //creating another ZonedDateTime to see the DST time. its very wacky, not proud
+                        const zdIsDST = Temporal.ZonedDateTime.from({
+                            timeZone: Temporal.Now.timeZone(),
+                            year: props.timestamp.year(),
+                            month: props.timestamp.month(),
+                            day: props.timestamp.day(),
+                            hour: props.timestamp.hour() + 1,
+                        }).withTimeZone(timezone).hour === zdTime.hour
+                        return zdIsDST ? zdTime.add({ hours: 1 }) : zdTime
                     }}
                 />
                 {")"}
             </>
         </TooltipContainer>)
     })
-    // patcher.after("MessagePatch", webpack.find(m => m.default?.displayName === "MessageHeader"), "default", ([props], topRes, _this) => {
-    //     const tz = UserManager.get(props.message.author.id)?.timeZone
-    //     if (!tz) return
-
-    //     const firstOgFunc = topRes?.type
-    //     if (!firstOgFunc) return
-    //     topRes.type = function (...args: any[]) {
-    //         const firstRes = firstOgFunc.apply(this, args)
-    //         // console.log({ firstRes })
-
-    //         const timestamp: any = findInReactTree(firstRes, (e: any) => e?.type?.displayName === "MessageTimestamp")
-    //         if (!timestamp) return firstRes
-    //         const ogTimestamp = timestamp?.type
-    //         timestamp.type = function (...args: any[]) {
-    //             const res = ogTimestamp.apply(this, args)
-    //             if (!res?.props?.children) return res
-
-    //             if (!Array.isArray(res?.props?.children)) res.props.children = [res.props.children]
-                
-    //             if (settings.get("timestamp-message", true)) {
-                    // res.props.children.push(<TooltipContainer className={styles["timestamps"]} text={`Message's timestamp in ${props.message.author.username}'s timezone`}>
-                    //     <>
-                    //         {"("}
-                    //         <TimezoneWrapper
-                    //             tpFunc={() => {
-                    //                 const zdTime = Temporal.ZonedDateTime.from({
-                    //                     timeZone: Temporal.Now.timeZone(),
-                    //                     year: props.message.timestamp.year(),
-                    //                     month: props.message.timestamp.month(),
-                    //                     day: props.message.timestamp.day(),
-                    //                     hour: props.message.timestamp.hour() + 1, //for some reason times are being converted with -1 hour when using the conversion, so i added a 1 to the hour
-                    //                     minute: props.message.timestamp.minute(),
-                    //                     second: props.message.timestamp.second(),
-                    //                     millisecond: props.message.timestamp.millisecond(),
-                    //                 })
-                    //                 return zdTime.withTimeZone(tz)
-                    //             }}
-                    //         />
-                    //         {")"}
-                    //     </>
-                    // </TooltipContainer>)
-    //             }
-                
-    //             return res
-    //         }
-
-    //         return firstRes
-    //     }
-    // })
-}
-
-const TimezoneWrapper = ({ tpFunc }: { tpFunc: () => any}) => {
-    const time = useTemporalUpdate(tpFunc)
-    return time.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })
 }
 
 const StaticTimezoneWrapper = ({ tpFunc }: { tpFunc: () => any }) => {
     const [time, setTime] = useState<any>(null)
     useEffect(() => {
-        const runnedTpFunc = tpFunc()
-        setTime(runnedTpFunc.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' }))
+        setTime(tpFunc().toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' }))
     }, [])
     return time
 }

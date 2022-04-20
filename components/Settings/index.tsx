@@ -18,6 +18,7 @@ import Timer from "../Timer";
 import getTip from "../../handlers/tips";
 import updateMessages from "../../utils/updateMessages";
 import debounce from "../../utils/debounce";
+import TimezoneWrapper from "../TimezoneWrapper";
 
 const MarkdownParser = webpack.findByProps("renderMessageMarkupToAST").default
 
@@ -106,15 +107,13 @@ interface UserItemProps {
     onDelete: () => void
 }
 const UserItem = ({ id, userSettings, onEdit, onDelete }: UserItemProps) => {
-    const time = useTemporalUpdate(() => Temporal.Now.instant().toZonedDateTimeISO(userSettings.timeZone))
-    
     const discordUser: UserObject = Users.getUser(id)
 
     return <div className={styles["item"]}>
         <Avatar src={discordUser.getAvatarURL(false, true)} size={Avatar.Sizes.SIZE_20} />
         <span className={styles["username"]}>{discordUser?.username}</span>
         <span className={styles["current-time"]}>
-            {time.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })}
+            <TimezoneWrapper tpFunc={() => Temporal.Now.instant().toZonedDateTimeISO(userSettings.timeZone)} />
         </span>
         <div className={styles["controls"]}>
             <Button size={Button.Sizes.ICON} onClick={onEdit}>

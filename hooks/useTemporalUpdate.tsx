@@ -1,9 +1,7 @@
-import * as webpack from "ittai/webpack";
-const { 
-    React: { useState, useEffect }
-} = webpack
+import { useState, useEffect } from "react";
 
 export const useTemporalUpdate = (update: () => any): any => {
+    console.log(useState, useEffect);
     if(typeof update !== "function") return
     
     const [temporal, setTemporal] = useState(update());
