@@ -17,10 +17,15 @@ export default function () {
 
         const tz = UserManager.get(props.user.id)?.timeZone
 
-        if (!tz) return
-
-        res.props.children.push(<div className={timerStyles["clock-wrapper"]}>
-            <Timer tpUpdateFunc={() => Temporal.Now.instant().toZonedDateTimeISO(tz)} />
-        </div>)
+        res.props.children.push(
+            <div className={timerStyles["clock-wrapper"]}>
+                <Timer
+                    tpUpdateFunc={() =>
+                        tz ? Temporal.Now.instant().toZonedDateTimeISO(tz) : undefined
+                    }
+                    userId={props.user.id}
+                />
+            </div>
+        )
     })
 }

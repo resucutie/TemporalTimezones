@@ -4,6 +4,7 @@ import { Plugin } from "ittai/entities";
 import * as Temporal from "temporal-polyfill"
 import * as patcher from "ittai/patcher";
 import * as webpack from "ittai/webpack";
+import * as toast from "ittai/toast"
 const { React } = webpack
 import userPopout from "./patches/userPopout";
 import Settings from "./components/Settings";
@@ -13,8 +14,8 @@ import messages from "./patches/messages";
 export default class TemporalTimezones extends Plugin {
     start() {
         // @ts-ignore
-        if (!window.exportedTemporal) window.exportedTemporal = Temporal;
-        
+        if (!window.exportedTemporal) window.exportedTemporal = Temporal
+
         this.setSettingsPanel(() => <Settings />)
 
         userPopout()

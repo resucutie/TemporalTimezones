@@ -172,8 +172,11 @@ const handleTimezoneDisplay = (searchTz: string, onSelection: (tz: TimeZoneArg) 
 
     const sortedTzCategory = (() => {
         let sortedCategoryNames = Object.keys(tzCategory).sort()
-        sortedCategoryNames.splice(sortedCategoryNames.indexOf("Other"), 1)
-        sortedCategoryNames.push("Other")
+        let otherIndex = sortedCategoryNames.indexOf("Other")
+        if (otherIndex >= 0) {
+            sortedCategoryNames.splice(sortedCategoryNames.indexOf("Other"), 1)
+            sortedCategoryNames.push("Other")
+        }
         return sortedCategoryNames.reduce((acc: { [key: string]: string[] }, key: string) => {
             acc[key] = tzCategory[key]
             return acc

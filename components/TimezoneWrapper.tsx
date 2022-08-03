@@ -3,5 +3,8 @@ import * as settings from "ittai/settings"
 
 export default ({ tpFunc }: { tpFunc: () => any }) => {
     const time = useTemporalUpdate(tpFunc)
-    return time.toPlainTime().toString({ smallestUnit: settings.get("seconds", false) ? 'second' : 'minute' })
+    // console.log(time)
+    return time.toPlainTime().toString({
+        smallestUnit: settings.get("seconds", false) ? "second" : "minute",
+    });
 }
